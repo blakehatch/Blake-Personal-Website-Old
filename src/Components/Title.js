@@ -7,11 +7,11 @@ import Objects from './Objects'
 
 export default function Title() {
     return (
-        <Canvas dpr={[1, 2]} camera={{ position: [0, 0, 10], fov: 22 }}>
+        <Canvas dpr={[1, 2]} camera={{ position: [0, 0, 10], fov: 22 }} >
             <Bg />
             <Suspense fallback={null}>
                 <Objects />
-                <Caption>{`Blake\nHatch\nDeveloper\nBuilder.`}</Caption>
+                <Caption>{`Blake\nHatch\nBuilder.\nDeveloper.`}</Caption>
                 <Rig />
             </Suspense>
         </Canvas>
@@ -27,7 +27,7 @@ function Caption({ children }) {
             font="/Ki-Medium.ttf"
             fontSize={width / 8}
             material-toneMapped={false}
-            anchorX="center"
+            anchorX="Center"
             anchorY="middle">
             {children}
         </Text>
