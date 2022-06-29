@@ -1,17 +1,29 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import ReactDOM from 'react-dom'
+import React from 'react'
+import './styles.css'
+import App from './App'
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
+//import { Logo } from '@pmndrs/branding'
+
+function Overlay() {
+  return (
+    <div style={{ position: 'absolute', top: 0, left: 0, pointerEvents: 'none', width: '100%', height: '100%' }}>
+      <a href="https://pmnd.rs/" style={{ position: 'absolute', bottom: 40, left: 90, fontSize: '13px' }}>
+        pmnd.rs
+        <br />
+        dev collective
+      </a>
+      <div style={{ position: 'absolute', top: 40, left: 40, fontSize: '13px' }}>bad —</div>
+      <div style={{ position: 'absolute', bottom: 40, right: 40, fontSize: '13px' }}>07/02/2022</div>
+    </div>
+  )
+}
+
+ReactDOM.render(
+  <>
     <App />
-  </React.StrictMode>
-);
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+    <Overlay />
+    {/*<Logo style={{ position: 'absolute', bottom: 40, left: 40, width: 30 }} />*/}
+  </>,
+  document.getElementById('root')
+)

@@ -1,28 +1,104 @@
-import logo from './logo.svg';
-import './App.css';
-import Title from './Components/Title'
+import * as THREE from 'three'
+import { Suspense } from 'react'
+import { Canvas, useThree, useFrame } from '@react-three/fiber'
+import { Text, CubeCamera, useBoxProjectedEnv } from '@react-three/drei'
+import { LayerMaterial, Depth, Noise } from 'lamina'
+import FloatingObjects from './FloatingObjects'
 
-function Overlay() {
+export default function App() {
   return (
-      <div style={{ position: 'absolute', top: 0, left: 0, pointerEvents: 'none', width: '100%', height: '100%' }}>
-        <a href="https://pmnd.rs/" style={{ position: 'absolute', bottom: 40, left: 90, fontSize: '13px' }}>
-          pmnd.rs
-          <br />
-          dev collective
-        </a>
-        <div style={{ position: 'absolute', top: 40, left: 40, fontSize: '13px' }}>bad —</div>
-        <div style={{ position: 'absolute', bottom: 40, right: 40, fontSize: '13px' }}>07/02/2022</div>
-      </div>
+      <>
+        <Canvas dpr={[1, 2]} camera={{ position: [0, 0, 10], fov: 22 }}>
+          <Bg />
+          <Suspense fallback={null}>
+            <FloatingObjects />
+            <Caption>{`BLAKE HATCH\nBUILDER.\nDEVELOPER.`}</Caption>
+            <Rig />
+          </Suspense>
+
+            {/*<Bg />*/}
+            {/*<Suspense fallback={null}>*/}
+            {/*    <FloatingObjects />*/}
+            {/*    <Caption>{`BLAKE HATCH\nBUILDER.\nDEVELOPER.`}</Caption>*/}
+            {/*    <Rig />*/}
+            {/*</Suspense>*/}
+        </Canvas>
+
+          <Canvas dpr={[1, 2]} camera={{ position: [0, 0, 10], fov: 22 }}>
+
+              <Bg />
+              <Suspense fallback={null}>
+                  <FloatingObjects />
+                  <TextPlane>{`Hello world.`}</TextPlane>
+                  <Rig />
+              </Suspense>
+          </Canvas>
+      </>
   )
 }
 
-function App() {
-  return (
-      <>
-        <Overlay />
-        <Title style={{ position: 'absolute', bottom: 40, left: 40, width: 30 }} />
-      </>
-  );
+function Caption( { children } ) {
+  const { width } = useThree((state) => state.viewport)
+
+        return (
+            <Text
+                    position={[0, 0, -5]}
+                    lineHeight={0.8}
+                    font="/Ki-Medium.ttf"
+                    fontSize={width / 8}
+                    material-toneMapped={false}
+                    anchorX="center"
+                    anchorY="middle">
+                    {children}
+                </Text>
+        );
 }
 
-export default App;
+function TextPlane( { children } ) {
+    const projection = useBoxProjectedEnv(
+        [0, 0, 0], // Position
+        [1, 1, 1] // Scale
+    );
+    const { width } = useThree((state) => state.viewport)
+
+    return (
+        <>
+            <Text
+                position={[0, 0, 0.1]}
+                lineHeight={0.8}
+                font="/Ki-Medium.ttf"
+                fontSize={width / 25}
+                material-toneMapped={false}
+                anchorX="center"
+                anchorY="middle">
+                {children}
+            </Text>
+            <CubeCamera frames={1}>
+                {(texture) => (
+                    <mesh>
+                        <planeGeometry/>
+                        <meshStandardMaterial envMap={texture} {...projection} />
+                    </mesh>
+                )}
+            </CubeCamera>
+        </>
+    );
+}
+
+function Rig({ v = new THREE.Vector3() }) {
+  return useFrame((state) => {
+    state.camera.position.lerp(v.set(state.mouse.x / 2, state.mouse.y / 2, 10), 0.05)
+  })
+}
+
+function Bg() {
+  return (
+    <mesh scale={100}>
+      <boxGeometry args={[1, 1, 1]} />
+      <LayerMaterial side={THREE.BackSide}>
+        <Depth colorB="red" colorA="skyblue" alpha={1} mode="normal" near={130} far={200} origin={[100, 100, -100]} />
+        <Noise mapping="local" type="white" scale={1000} colorA="white" colorB="black" mode="subtract" alpha={0.2} />
+      </LayerMaterial>
+    </mesh>
+  )
+}
