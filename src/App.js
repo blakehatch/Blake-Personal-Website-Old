@@ -28,7 +28,7 @@ export default function App() {
 
               <Bg />
               <Suspense fallback={null}>
-                  <FloatingObjects />
+                  <FloatingObjects glb={'/ether_scene_no_box.glb'}/>
                   <TextPlane>{`Hello world.`}</TextPlane>
                   <Rig />
               </Suspense>

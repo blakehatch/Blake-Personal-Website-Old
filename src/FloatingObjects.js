@@ -21,26 +21,33 @@ const material = new LayerMaterial({
   ]
 })
 
-function Noodle() {
+function Noodle({glb}) {
   const { viewport, camera } = useThree()
-  const { nodes } = useGLTF('/worms-transformed.glb')
+  let glbs = '/worms-transformed.glb';
+  if (glb) {glbs = glb};
+  const { nodes } = useGLTF(glbs)
+  //alert(glb)
+  // const [geometry] = useState(() => nodes[`noodle_${Math.ceil(Math.random() * 4)}_Ethereum_logo_@akimovcg${() =>{
+  //   if (Math.ceil(Math.random() * 4) !== 1) {return '.00' + Math.ceil(Math.random() * 4)}
+  // }
+  // }`].geometry)
   const [geometry] = useState(() => nodes[`noodle_${Math.ceil(Math.random() * 4)}`].geometry)
   const [speed] = useState(() => 0.1 + Math.random() / 10)
   const position = useMemo(() => {
     const z = Math.random() * -30
-    const bounds = viewport.getCurrentViewport(camera, [0, 0, z])
+    const bounds = viewport.getCurrentViewport(camera, [0, 0, -20])
     return [THREE.MathUtils.randFloatSpread(bounds.width), THREE.MathUtils.randFloatSpread(bounds.height * 0.75), z]
   }, [viewport])
   return (
     <Float position={position} speed={speed} rotationIntensity={10} floatIntensity={40} dispose={null}>
-      <mesh scale={5} geometry={geometry} material={material} />
+      <mesh scale={8} geometry={geometry} material={material} />
     </Float>
   )
 }
 
-export default function FloatingObjects() {
-  return Array.from({ length: 25 }, (_, i) => <Noodle key={i} />)
+export default function FloatingObjects({glb}) {
+  return Array.from({ length: 25 }, (_, i) => <Noodle key={i} glb={glb} />)
 }
 
-//useGLTF.preload('/worm-transformed.glb')
-useGLTF.preload('/worm-transformed.glb')
+useGLTF.preload('/worms-transformed.glb')
+//useGLTF.preload('/ether_scene_no_box.glb')
